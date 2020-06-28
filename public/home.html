@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Home Page</title>
+</head>
+<body>
+	<h1>Wishlist Home Page</h1>
+	<form action="/getProfile" method="get">		
+		User ID:
+		<input type="number" name="userid">
+		<br><br>
+		<input type="submit" value="Get user Profile">
+	</form>
+
+	<form action="/getwishLists" method="get">	
+		<br><br>	
+		User ID:
+		<input type="text" name="userid">
+		<br><br>
+		<input type="submit" value="Get User's wishlists">
+	</form>
+
+	<form action="/getwishListItems" method="get">	
+		<br><br>	
+		Wishlist ID:
+		<input type="text" name="wishlistid">
+		<br><br>
+		<input type="submit" value="Get user's wisthlist items">
+	</form>
+
+	<form action="/getItemInfo" method="get">	
+		<br><br>	
+		Item ID:
+		<input type="text" name="itemid">
+		<br><br>
+		<input type="submit" value="Get wishlist item info">
+	</form>
+
+
+</body>
+</html>
