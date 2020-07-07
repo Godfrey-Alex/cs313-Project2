@@ -3,39 +3,17 @@
 <head>
 	<title>Home Page</title>
 </head>
-<body>
-	<h1>Wishlist Home Page</h1>
-	<form action="/getProfile" method="get">		
-		User ID:
-		<input type="number" name="userid">
-		<br><br>
-		<input type="submit" value="Get user Profile">
-	</form>
+<body onload="allFunctions()">
 
-	<form action="/getwishLists" method="get">	
-		<br><br>	
-		User ID:
-		<input type="text" name="userid">
-		<br><br>
-		<input type="submit" value="Get User's wishlists">
-	</form>
+	<h1 id="userWelcome">Welcome User</h1>
+	<h2>Wish list Page</h2>
+	<!--<input type="text" id="username" name="username"><br>-->
+	<h2>Behold your Lists</h2>
+	<h3 id="wishListHeader"></h3>
+	<ul id="itemList">
+	</ul>
 
-	<form action="/getwishListItems" method="get">	
-		<br><br>	
-		Wishlist ID:
-		<input type="text" name="wishlistid">
-		<br><br>
-		<input type="submit" value="Get user's wisthlist items">
-	</form>
-
-	<form action="/getItemInfo" method="get">	
-		<br><br>	
-		Item ID:
-		<input type="text" name="itemid">
-		<br><br>
-		<input type="submit" value="Get wishlist item info">
-	</form>
-
-
+	<script src="js/api.js">
+	</script>
 </body>
 </html>

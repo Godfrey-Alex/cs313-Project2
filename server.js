@@ -73,7 +73,7 @@ function DBgetProfile(id, callback){
 
 function DBgetwishLists(id, callback){
     console.log("Function called to query DB for user wishlist IDs: ", id);
-    var sql = "SELECT * FROM wishlistTable WHERE id = $1::int";
+    var sql = "SELECT * FROM wishlistTable WHERE ownerid = $1::int";
     var params = [id];
     pool.query(sql, params, function(err, result){
         if (err){
