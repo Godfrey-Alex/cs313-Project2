@@ -1,7 +1,8 @@
 function myFunction(){
     //console.log("calling to get user info");
+    sessionStorage.setItem("currentUserId", 1);
     let request = new XMLHttpRequest();
-    request.open("GET", "/getProfile?userid=1");
+    request.open("GET", "/getProfile?userid="+sessionStorage.getItem("currentUserId"));
     request.send();
     request.onload = () => {
         //console.log(request);
