@@ -53,7 +53,7 @@ function getuserwishListItems(req, res){
 
 function DBgetUserWishListItems(id, callback){
     console.log("Function called to query DB for user wishlist Items: ", id);
-    var sql = "SELECT * from userwishlistTable WHERE ownerId = $1::int";
+    var sql = "SELECT * from userwishlisttable WHERE ownerId = $1::int";
     var params = [id];
     pool.query(sql, params, function(err, result){
         if (err){
