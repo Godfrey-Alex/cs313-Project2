@@ -5,6 +5,7 @@ app.use(express.json() );
 app.use(express.urlencoded({ extended: true }));
 
 const { Pool } = require("pg");
+const { json } = require('express');
 const connectionString = process.env.DATABASE_URL || "postgres://wishlistuser:password1@localhost:5432/wishlistdb"
 const pool = new Pool({connectionString: connectionString});
 
@@ -22,23 +23,122 @@ app.get("/getItemInfo", getItemInfo)
 app.get("/getuserwishListItems", getuserwishListItems)
 
 app.post("/addItemToList", addItemToList)
+app.post("/deleteItem", deleteItem)
+app.get("/login", login)
+app.get("/createUser", createUser);
 
 app.listen(app.get("port"), function(){
     console.log("Connection string:" + connectionString);
     console.log("Serve now listening on port: ", app.get("port"));
 });
 
+function deleteItem(req,res){
+    console.log("deleting item: " + req.body.itemid);
+    DBdeleteItem(req, function(error, result){
+        console.log("back from DB after Deleting item: ", result);
+        res.json(result);
+    });
+}
+
+function DBdeleteItem(req,callback){
+    var id = req.body.itemid;
+    sql = "DELETE from userwishlistTable where id = "+id;
+    pool.query(sql, function(err, result){
+        if (err){
+            console.log("An error with the DB occured: ", err);
+            callback(err, null);
+        }
+        console.log("Found DB result: "+JSON.stringify(result.rows))
+        callback(null,result.rows)
+    });
+}
+
+function createUser(request, res){
+    console.log("Creating user: " + request.query.username + "password: "+request.query.password + "displayName: " + request.query.displayName);
+    DBcreateUser(request, function(error, result){
+        console.log("back from DB after creating user: ", result);
+        res.json(result);
+    });
+
+}
+
+function DBcreateUser(req, callback){
+    var username = req.query.username;
+    var password = req.query.password;
+    var displayName = req.query.displayName;
+    var sql = "INSERT INTO userTable (username, password, display_name) VALUES ('"+username+"', '"+password+"', '"+displayName+"');";
+
+    pool.query(sql, function(err, result){
+        if (err){
+            console.log("An error with the DB occured: ", err);
+            callback(err, null);
+        }
+        console.log("Found DB result: "+JSON.stringify(result.rows))
+        callback(null,result.rows)
+    });
+
+}
+
+function login(request, res) {
+    console.log("login called " + request.query.username );
+    //var result = {success: false};	
+    
+    DBLogin(request, function(error, result){
+        console.log("Back from DB with user id: ", result);
+        res.json(result);
+    })  
+}
+
+function DBLogin(req,callback){
+    var username = req.query.username;
+    var password = req.query.password;
+    var sql = "SELECT id from userTable where username = '"+username+"' and password = '" + password + "';";
+    console.log("login sql statment: "+sql);
+    pool.query(sql, function(err, result){
+        if (err){
+            console.log("An error with the DB occured: ", err);
+            callback(err, null);
+        }
+        console.log("Found DB result: "+JSON.stringify(result.rows))
+        callback(null,result.rows)
+    });
+}
+
 
 function addItemToList(req,res){
     console.log("***Adding item to list***" + req.body);
     var result = {success: false};
+    console.log("received post call to add item to list. name: "+ req.body.itemName);
+    DBaddItemToList(req, function(error, result){
+        console.log("Back from DB after attempting to add item: ", result);
+    })
+    res.json(result);
+}
+
+function DBaddItemToList(req, callback){
     var ownerID = req.body.userid;
     var itemName = req.body.itemName;
-    var itemPrice = req.body.price;
-    var itemDesc = req.body.description;
-    var itemUrl = req.body.url;
-    console.log("received post call to add item to list. name: "+ itemName);
-    res.json(result);
+    var itemPrice = req.body.itemPrice;
+    var itemDesc = req.body.itemDesc;
+    var itemUrl = req.body.itemURL;
+
+    if(!itemUrl.startsWith("https://")){
+        itemUrl = "https://" + itemUrl;
+    }
+
+    console.log("executing DB funtion to add an item: ownerid: " + ownerID + " itemName: "+ itemName
+    + " Price: "+ itemPrice + " Description: " + itemDesc + " URL: "+ itemUrl);
+    var sql = "INSERT INTO userwishlistTable (ownerId, name, price, description, url) VALUES ('"+ownerID+"', '"+itemName+"', '"+itemPrice+"', '"+itemDesc+"', '"+itemUrl+"');"
+    console.log("SQL: " + sql);
+    pool.query(sql, function(err, result){
+        if (err){
+            console.log("An error with the DB occured: ", err);
+            callback(err, null);
+        }
+        console.log("Added item to DB");
+        result = {success: true}
+        callback(null,result)
+    });
 }
  
 

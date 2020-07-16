@@ -1,6 +1,16 @@
 function myFunction(){
     //console.log("calling to get user info");
-    sessionStorage.setItem("currentUserId", 1);
+    //sessionStorage.setItem("currentUserId", 1);
+
+    if(sessionStorage.getItem("currentUserId")===null){
+        //window.alert("user is not logged in");
+        window.location = "/login.html";
+    }else{
+        //window.alert("user if logged in"+ sessionStorage.getItem("currentUserId"));
+        //window.location = "/login.html";
+    
+
+
     let request = new XMLHttpRequest();
     request.open("GET", "/getProfile?userid="+sessionStorage.getItem("currentUserId"));
     request.send();
@@ -15,6 +25,7 @@ function myFunction(){
             console.log("error in request");
         }
     }
+}
 
 }
 
@@ -105,6 +116,13 @@ function getItemDetails(){
 }
 
 function getWishList(){
+
+    if(sessionStorage.getItem("currentUserId")===null){
+        //window.alert("user is not logged in");
+        window.location = "/login.html";
+    }else{
+        //window.alert("user if logged in"+ sessionStorage.getItem("currentUserId"));
+        //window.location = "/login.html";
     var userID = sessionStorage.getItem("currentUserId");
     console.log("getting list from db Current user id: "+ userID);
     let request = new XMLHttpRequest();
@@ -114,50 +132,49 @@ function getWishList(){
         if(request.status == 200){
             console.log(JSON.parse(request.response));            
             var data = JSON.parse(request.response);
-            console.log("data: " + data[1]["name"] + " data length: "+ data.length);
-
+            //console.log("data: " + data[1]["name"] + " data length: "+ data.length);
                 for ( j = 0 ; j < data.length ; j++){
                     var node = document.createElement("LI");
                     node.id="item"+data[j]["id"];
                     var textnode = document.createTextNode(data[j]["name"] +", $" + data[j]["price"]+", "+data[j]["description"]);
                     node.appendChild(textnode);
                     document.getElementById("itemList").appendChild(node);
-
                     var link = document.createElement('a');
                     link.href = data[j]["url"];
                     link.innerHTML = "   View on site"; 
                     document.getElementById("item"+data[j]["id"]).appendChild(link);
 
-                    //var btn = document.createElement("BUTTON");
-                    //var txt = document.createTextNode("View on Site");
-                    //btn.appendChild(txt);
-                    //btn.addEventListener("click", function(){
-                        //location.replace(data[j]["url"]);
-                    //});  
-                    //
-
+                    var list = document.getElementById("deleteItemsId");
+                    var option = document.createElement("option");
+                    option.text = data[j]["name"];
+                    option.value = data[j]["id"];
+                    list.add(option);
                 }
-
         } else {
             console.log("error in request");
         }
     }
 
+}
+
+
+
+
 
 }
 
 function addItemToList(){
-    console.log("You want to add an item to list?...");
+    //console.log("You want to add an item to list?...");
     var currentUserId =  sessionStorage.getItem("currentUserId");
-    console.log("current id: "+currentUserId);
+    //console.log("current id: "+currentUserId);
     var itemName = document.getElementById("name").value;
-    console.log("itemName: "+ itemName);
+    //console.log("itemName: "+ itemName);
     var itemPrice = document.getElementById("price").value;
-    console.log("itemPrice: "+ itemPrice);
+    //console.log("itemPrice: "+ itemPrice);
     var itemDesc = document.getElementById("description").value;
-    console.log("itemDesc: "+ itemDesc);
+    //console.log("itemDesc: "+ itemDesc);
     var itemURL = document.getElementById("url").value;
-    console.log("itemURL: "+ itemURL);
+    //console.log("itemURL: "+ itemURL);
 
     var params = {
         userid: currentUserId,
@@ -166,14 +183,18 @@ function addItemToList(){
         itemDesc: itemDesc,
         itemURL: itemURL
     }
-    console.log(params);
+    //console.log(params);
 
     $.post("/addItemToList", params, function(result){
         if(result && result.success){
+            console.log("result: " + result.success);
+            //window.alert("result: " + result.success);
             console.log("Sucessfully Added item to list")
         } else {
             console.log("Error adding user");
+            //window.alert("result: " + result.success);
         }
+        location.reload();
     });
 
 
@@ -197,8 +218,48 @@ function addItemToList(){
 
 }
 
+
+function deleteItem(){
+    var item = document.getElementById("deleteItemsId").value;
+    window.alert("item to delete: " + item);
+
+    var params = {
+        itemid: item
+    }
+
+    $.post("/deleteItem", params, function(result){
+        if(result && result.success){
+            console.log("result: " + result.success);
+            //window.alert("result: " + result.success);
+            console.log("Sucessfully Deleted Item")
+        } else {
+            console.log("Error adding user");
+            //window.alert("result: " + result.success);
+        }
+        location.reload();
+    });
+
+}
+
+function checkLogin(){
+    if(sessionStorage.getItem("currentUserId")===null){
+        //window.alert("user is not logged in");
+        window.location = "/login.html";
+    }else{
+        //window.alert("user if logged in"+ sessionStorage.getItem("currentUserId"));
+        //window.location = "/login.html";
+    }
+
+}
+
+function logout(){
+    sessionStorage.clear();
+    window.location = "/login.html";
+}
+
 function allFunctions(){
     //console.log("Calling two fucntions");
+    checkLogin();
     myFunction();
     getWishList();
     //listFunction();

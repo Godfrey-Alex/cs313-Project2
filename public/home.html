@@ -5,6 +5,7 @@
 </head>
 <body onload="allFunctions()">
 
+	<button onclick="logout();">Logout</button>
 	<h1 id="userWelcome">Welcome User</h1>
 	<h2>Wish list Page</h2>
 	<!--<input type="text" id="username" name="username"><br>-->
@@ -22,6 +23,14 @@
 		<input type="text" name="cn" id="url" placeholder="URL"><br>
 
 		<button onclick="addItemToList();">Add Item</button>
+	</div>
+
+	<h2>Delete an Item from list...</h2>
+	<div>
+		<label for="deleteItems">Choose an item to delete:</label>
+		<select name="deleteItemsName" id="deleteItemsId">			
+		</select>
+		<button onclick="deleteItem();">Delete Item</button>
 	</div>
 
 
