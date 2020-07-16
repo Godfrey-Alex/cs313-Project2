@@ -221,7 +221,7 @@ function addItemToList(){
 
 function deleteItem(){
     var item = document.getElementById("deleteItemsId").value;
-    window.alert("item to delete: " + item);
+    //window.alert("item to delete: " + item);
 
     var params = {
         itemid: item
